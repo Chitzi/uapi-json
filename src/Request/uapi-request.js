@@ -11,9 +11,6 @@ const errorsConfig = require('./errors-config');
 const prepareRequest = require('./prepare-request');
 const configInit = require('../config');
 
-var original_request;
-var original_response;
-
 handlebars.registerHelper('equal', require('handlebars-helper-equal'));
 
 /**
@@ -83,9 +80,6 @@ module.exports = function uapiRequest(
         log('Request URL: ', service);
         log('Request XML: ', pd.xml(xml));
       }
-
-      original_request = xml;
-
       return axios.request({
         url: service,
         method: 'POST',
@@ -112,8 +106,6 @@ module.exports = function uapiRequest(
             status: rsp.status,
             data: rsp.data,
           };
-
-          original_response = rsp;
 
           if (debugMode) {
             log('Error Response SOAP: ', pd.json(error));
@@ -170,7 +162,7 @@ module.exports = function uapiRequest(
           log('Returning result', pd.json(result));
         }
       }
-      return {request: original_request, response: original_response, result: result};
+      return result;
     };
 
 
