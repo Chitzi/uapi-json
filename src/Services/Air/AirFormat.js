@@ -77,12 +77,16 @@ function formatTrip(segment, flightDetails) {
   const plane = flightInfo.map(details => details.Equipment || 'Unknown');
   const duration = flightInfo.map(details => details.FlightTime || 0);
   const techStops = flightInfo.slice(1).map(details => details.Origin);
+  const originTerminal = flightInfo[0].DestinationTerminal || "";
+  const arrivalTerminal = flightInfo[0].OriginTerminal || "";
   return {
     ...formatSegment(segment),
     serviceClass: segment.CabinClass,
     plane,
     duration,
     techStops,
+    originTerminal,
+    arrivalTerminal
   };
 }
 
@@ -138,14 +142,19 @@ function formatLowFaresSearch(searchRequest, searchResult) {
               bookingClass: segmentInfo.BookingCode,
               baggage: [getBaggage(fareInfo['air:BaggageAllowance'])],
               fareBasisCode: fareInfo.FareBasis,
+              OriginTerminal: fareInfo.OriginTerminal,
+              DestinationTerminal: fareInfo.DestinationTerminal,
             },
             seatsAvailable ? { seatsAvailable } : null
           );
         }
       );
+      console.log("trips", JSON.stringify(trips));
       return {
         from: direction.Origin,
         to: direction.Destination,
+        // from_terminal: tripFlightDetails.OriginTerminal,
+        // to_terminal: tripFlightDetails.DestinationTerminal,
         // duration
         // TODO get overnight stops, etc from connection
         platingCarrier: thisFare.PlatingCarrier,
